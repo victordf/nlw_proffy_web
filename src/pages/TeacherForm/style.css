@@ -2,3 +2,77 @@
   width: 100vw;
   height: 100vh;
 }
+
+#page-teacher-form .header-content > p {
+  color: var(--color-text-in-primary);
+  margin: 2rem 0 5rem 0;
+}
+
+#page-teacher-form main {
+  background: var(--color-box-base);
+  border: 1px solid var(--color-line-in-white);
+  border-radius: 0.8rem;
+  margin: -4rem auto 3rem auto;
+  min-height: 40rem;
+  max-width: 740px;
+}
+
+#page-teacher-form main fieldset {
+  margin: 3rem 2.4rem 4rem 2.4rem;
+  border: none;
+}
+
+#page-teacher-form main fieldset legend {
+  width: 100%;
+  font-size: 2.6rem;
+  font-weight: 700;
+  padding-bottom: 1rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--color-line-in-white);
+}
+
+#page-teacher-form main fieldset legend div {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+#page-teacher-form main fieldset legend div span {
+  color: var(--color-text-title);
+}
+
+#grid-horarios .horarios-group {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-rows: auto;
+  grid-gap: 2rem;
+  grid-area: "dia das ate";
+}
+
+#grid-horarios .horarios-group .horario-item {
+  margin: 0;
+}
+
+#page-teacher-form footer {
+  display: flex;
+  justify-content: space-between;
+  min-height: 16rem;
+  padding: 2rem;
+  border-top: 1px solid var(--color-line-in-white);
+  background: var(--color-input-background);
+  border-end-end-radius: 0.8rem;
+  border-end-start-radius: 0.8rem;
+}
+
+#page-teacher-form footer #div-aviso {
+  display: flex;
+  justify-content: space-between;
+}
+
+#page-teacher-form footer #div-aviso div {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 2rem;
+}
