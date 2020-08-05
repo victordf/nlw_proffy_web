@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PageHeader from '../../components/PageHeader'
 
 import './style.css'
@@ -6,6 +6,8 @@ import TextField from '../../components/TextField'
 import warningIcon from '../../assets/images/icons/warning.svg'
 
 export default function TeacherForm() {
+  const [timeArray, setTimeArray] = useState([])
+
   return (
     <div id="page-teacher-form">
       <PageHeader title="Que bom que você quer dar aulas">
