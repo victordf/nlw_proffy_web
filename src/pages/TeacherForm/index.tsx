@@ -1,103 +1,152 @@
-import React, { useState } from 'react'
+import React, { useState, FormEvent } from 'react';
+import { useHistory } from 'react-router-dom'
+
 import PageHeader from '../../components/PageHeader'
+import Input from '../../components/Input'
+import warningIcon from '../../assets/images/icons/warning.svg'
+import Textarea from '../../components/Textarea'
+import Select from '../../components/Select'
 
 import './style.css'
-import TextField from '../../components/TextField'
-import warningIcon from '../../assets/images/icons/warning.svg'
+import api from '../../services/api'
 
 export default function TeacherForm() {
-  const [timeArray, setTimeArray] = useState([])
+  const [name, setName] = useState('');
+  const [avatar, setAvatar] = useState('');
+  const [whatsapp, setWhatsapp] = useState('');
+  const [bio, setBio] = useState('');
+
+  const [subject, setSubject] = useState('');
+  const [cost, setCost] = useState('');
+
+  const history = useHistory()
+
+  const [scheduleItems, setScheduleItems] = useState([
+    { week_day: 0, from: '', to: '' }
+  ]);
+
+  function addNewScheduleItem() {
+    setScheduleItems([
+      ...scheduleItems,
+      { week_day: 0, from: '', to: '' }
+    ])
+  }
+
+  function handleCreateClass(e: FormEvent) {
+    e.preventDefault();
+
+    api.post('/classes', {
+      name,
+      avatar,
+      whatsapp,
+      bio,
+      subject,
+      cost: Number(cost),
+      schedule: scheduleItems
+    }).then((response) => {
+      alert('Cadastro realizado com sucesso')
+      history.push('/');
+    }).catch(err => {
+      alert('Erro ao cadastrar')
+    })
+  }
+
+  function setScheduleItemsValue(position: number, field: string, value: string) {
+    const updatedScheduleItems = scheduleItems.map((item, index) => {
+      if (index === position)
+        return { ...item, [field]: value }
+      return item
+    })
+    setScheduleItems(updatedScheduleItems);
+  }
 
   return (
     <div id="page-teacher-form">
-      <PageHeader title="Que bom que você quer dar aulas">
-        <p>O primeiro passo, é preencher esse formulário</p>
-      </PageHeader>
+      <PageHeader 
+        title="Que bom que você quer dar aulas"
+        description="O primeiro passo, é preencher esse formulário"
+      />
 
       <main>
-        <form id="form-teacher">
+        <form id="form-teacher" onSubmit={handleCreateClass}>
           <fieldset>
             <legend><span>Seus Dados</span></legend>
 
-            <TextField 
-              id="name"
-              label="Nome Completo"
-            />
-
-            <TextField 
-              id="link-foto"
-              label="Link da sua foto (comece com //http)"
-            />
-
-            <TextField 
-              id="whatsapp"
-              label="Whatsapp (somente número)"
-            />
-
-            <TextField 
-              id="biografia"
-              label="Biografia"
-              type="textarea"
-              rows={5}
-              cols={12}
+            <Input name="name" value={name} onChange={(e => setName(e.target.value))} label="Nome Completo" />
+            <Input name="avatar" value={avatar} onChange={(e => setAvatar(e.target.value))} label="Link da sua foto (comece com //http)" />
+            <Input name="whatsapp" value={whatsapp} onChange={(e => setWhatsapp(e.target.value))} label="Whatsapp (somente número)" />
+            <Textarea name="biografia" value={bio} onChange={(e => setBio(e.target.value))} label="Biografia" rows={5} cols={12}
             />
           </fieldset>
 
           <fieldset>
             <legend><span>Sobre a aula</span></legend>
 
-            <TextField 
-              id="subject"
-              label="Matéria"
+            <Select  
+              name="subject" 
+              label="Matéria" 
+              value={subject} 
+              onChange={(e => setSubject(e.target.value))}
+              options={[
+                { value: 'Artes', label: 'Artes'},
+                { value: 'Biologia', label: 'Biologia'},
+                { value: 'Ciências', label: 'Ciências'},
+                { value: 'Educação física', label: 'Educação física'},
+                { value: 'Física', label: 'Física'},
+                { value: 'Geografia', label: 'Geografia'},
+                { value: 'História', label: 'História'},
+                { value: 'Matemática', label: 'Matemática'},
+                { value: 'Português', label: 'Português'},
+                { value: 'Química', label: 'Química'}
+              ]}
             />
-
-            <TextField 
-              id="value-hora"
-              label="Custo da sua hora por aula (em R$)"
-            />
+            <Input value={cost} onChange={(e => setCost(e.target.value))} name="cost" label="Custo da sua hora por aula (em R$)" />
           </fieldset>
 
           <fieldset>
             <legend>
-              <div>
-                <span>Horários disponíveis</span>
-                <button type="button">Novo horário</button>
-              </div>
+              Horários disponíveis
+              <button type="button" onClick={addNewScheduleItem}>
+                + Novo horário
+              </button>
             </legend>
 
-            <div id="grid-horarios">
-              <div className="horarios-group">
-                <TextField 
-                  id="week-day"
-                  className="horario-item"
-                  label="Dia da semana"
-                />
+            {scheduleItems.map((item, index) => {
+              return (
+                <div key={index} className="schedule-item">
+                  <Select  
+                    name="week_day" 
+                    label="Dia da semana" 
+                    value={scheduleItems[index].week_day}
+                    onChange={e => setScheduleItemsValue(index, 'week_day', e.target.value)}
+                    options={[
+                      { value: '0', label: 'Domingo'},
+                      { value: '1', label: 'Segunda-feira'},
+                      { value: '2', label: 'Terça-feira'},
+                      { value: '3', label: 'Quarta-feira'},
+                      { value: '4', label: 'Quinta-feira'},
+                      { value: '5', label: 'Sexta-feira'},
+                      { value: '6', label: 'Sábado'}
+                    ]}
+                  />
+                  <Input onChange={e => setScheduleItemsValue(index, 'from', e.target.value)} name="from" value={scheduleItems[index].from} label="Das" type="time" />
+                  <Input onChange={e => setScheduleItemsValue(index, 'to', e.target.value)} name="to" value={scheduleItems[index].to} label="Até" type="time" />
+                </div>
+              );
+            })
+            }
 
-                <TextField 
-                  id="time-init"
-                  className="horario-item"
-                  label="Das"
-                />
-
-                <TextField 
-                  id="time-finish"
-                  className="horario-item"
-                  label="Até"
-                />
-              </div>
-            </div>
           </fieldset>
 
           <footer>
-            <div id="div-aviso">
-              <img src={warningIcon} alt="Aviso"/>
-              <div>
-                <span>Importante!</span>
-                <span>Preencha todos os dados</span>
-              </div>
-            </div>
-
-            <button type="button">Salvar cadastro</button>
+            <p>
+              <img src={warningIcon} alt="Aviso importante"/>
+              Importante! <br />
+              Preencha todos os dados
+            </p>
+            <button type="submit">
+              Salvar cadastro
+            </button>
           </footer>
         </form>
       </main>
